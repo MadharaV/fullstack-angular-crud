@@ -1,0 +1,78 @@
+<div class="container mt-4">
+  <h1>Department Management</h1>
+  <div class="text-end mb-3">
+    <button class="btn btn-success" (click)="isListView = !isListView">
+      {{ isListView ? "New Department +" : "Department List" }}
+    </button>
+  </div>
+
+  <div *ngIf="isListView">
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Department ID</th>
+          <th>Department Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dept of departments; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ dept.deptId }}</td>
+          <td>{{ dept.deptName }}</td>
+          <td>
+            <button
+              class="btn btn-sm btn-primary me-2"
+              (click)="onEditDept(dept)"
+            >
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="onDeleteDept(dept)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Form View -->
+  <div *ngIf="!isListView">
+    <h3>{{ departmentObject.deptId ? "Edit" : "Add" }} Department</h3>
+    <form (ngSubmit)="onSaveDept()" class="mt-3">
+      <div class="mb-3">
+        <label for="deptId" class="form-label">Department ID</label>
+        <input
+          type="text"
+          id="deptId"
+          class="form-control"
+          [(ngModel)]="departmentObject.deptId"
+          name="deptId"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="deptName" class="form-label">Department Name</label>
+        <input
+          type="text"
+          id="deptName"
+          class="form-control"
+          [(ngModel)]="departmentObject.deptName"
+          name="deptName"
+          required
+        />
+      </div>
+
+      <div class="mt-4 pt-2">
+        <input
+          data-mdb-ripple-init
+          (click)="onSaveDept()"
+          class="btn btn-primary btn-lg"
+          type="button"
+          [value]="isEditMode() ? 'Update' : 'Save'"
+        />
+      </div>
+    </form>
+  </div>
+</div>

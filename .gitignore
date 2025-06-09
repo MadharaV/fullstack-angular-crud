@@ -1,0 +1,22 @@
+# Ignore node_modules folders anywhere in the project
+**/node_modules/
+
+# Ignore logs
+*.log
+
+# Ignore backend specific files/folders
+/backend/*.log
+
+# Ignore frontend build output
+/frontend/dist/
+/frontend/out-tsc/
+
+# Ignore environment files (if any)
+*.env
+
+# Ignore OS-specific files (optional)
+/.DS_Store
+/thumbs.db
+
+# Ignore VSCode workspace settings folder
+.vscode/

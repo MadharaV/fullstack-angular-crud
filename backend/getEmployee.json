@@ -1,0 +1,50 @@
+{
+  "data": [
+    {
+      "firstName": "Sachin",
+      "lastName": "Tendulkar",
+      "department": "Sales",
+      "departmentId": "1",
+      "gender": "Male",
+      "email": "sachin@gmail.com",
+      "phoneNo": "9988776655",
+      "departmentName": "Sales"
+    },
+    {
+      "firstName": "Rahul",
+      "lastName": "Dravid",
+      "department": "Marketing",
+      "departmentId": "2",
+      "gender": "Male",
+      "email": "Rahul@gmail.com",
+      "phoneNo": "8877665544"
+    },
+    {
+      "firstName": "Mahendra Singh",
+      "lastName": "Dhoni",
+      "department": "RnD",
+      "departmentId": "4",
+      "gender": "Male",
+      "email": "Mahendra@gmail.com",
+      "phoneNo": "4455661188"
+    },
+    {
+      "firstName": "Rohit",
+      "lastName": "Sharma",
+      "department": "Admin",
+      "departmentId": "3",
+      "gender": "Male",
+      "email": "Rohit@gmail.com",
+      "phoneNo": "1122334455"
+    },
+    {
+      "firstName": "Madhara",
+      "lastName": "Weerasinghe",
+      "departmentId": "1",
+      "gender": "Fe-Male",
+      "email": "maddy@gmail.com",
+      "phoneNo": "1199773355",
+      "departmentName": "Computer Science"
+    }
+  ]
+}
