@@ -28,49 +28,96 @@ app.get("/api/departments", (req, res) => {
 app.post("/api/employees", (req, res) => {
   const newEmp = req.body;
 
+  if (!newEmp.firstName || !newEmp.lastName || !newEmp.email) {
+    return res
+      .status(400)
+      .json({ message: "Missing required employee fields." });
+  }
+
   const raw = fs.readFileSync(FILE_PATH);
   const data = JSON.parse(raw);
 
-  const index = data.data.findIndex((emp) => emp.email === newEmp.email);
+  if (newEmp.empId) {
+    const index = data.data.findIndex((emp) => emp.empId === newEmp.empId);
+    if (index >= 0) {
+      data.data[index] = { ...data.data[index], ...newEmp };
+      fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
+      return res.json({ message: "Employee updated successfully" });
+    }
+  }
 
-  if (index >= 0) {
-    data.data[index] = newEmp;
-  } else {
-    data.data.push(newEmp);
+  const maxId = data.data.reduce(
+    (max, emp) => Math.max(max, emp.empId || 0),
+    0
+  );
+  newEmp.empId = maxId + 1;
+
+  data.data.push(newEmp);
+  fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
+
+  res.json({ message: "Employee created successfully", empId: newEmp.empId });
+});
+
+app.patch("/api/employee/:empId", (req, res) => {
+  const empId = parseInt(req.params.empId);
+  const updates = req.body;
+
+  try {
+    const raw = fs.readFileSync(FILE_PATH);
+    const data = JSON.parse(raw);
+
+    const index = data.data.findIndex((emp) => emp.empId === empId);
+    if (index === -1) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    data.data[index] = { ...data.data[index], ...updates };
+
+    fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
+    res.json({ message: "Employee updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).jsonp({ message: "Failed to update employee" });
+  }
+});
+
+app.delete("/api/employees/:empId", (req, res) => {
+  const empId = parseInt(req.params.empId);
+  const raw = fs.readFileSync(FILE_PATH);
+  const data = JSON.parse(raw);
+
+  const initialLength = data.data.length;
+  data.data = data.data.filter((emp) => emp.empId !== empId);
+
+  if (data.data.length === initialLength) {
+    return res.status(404).json({ message: "Employee not found" });
   }
 
   fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
-  res.json({ message: "Employee saved successfully" });
-});
-
-app.delete("/api/employees/:email", (req, res) => {
-  const email = req.params.email;
-  const raw = fs.readFileSync(FILE_PATH);
-  const data = JSON.parse(raw);
-
-  data.data = data.data.filter((emp) => emp.email !== email);
-  fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
-
-  res.json({ message: "Employee deleted successfully" });
+  res.json({ message: "✅" });
 });
 
 app.post("/api/departments", (req, res) => {
   const newDept = req.body;
 
-  if (!newDept.deptId || !newDept.deptName) {
-    return res
-      .status(400)
-      .json({ message: "Department ID and Name are required" });
+  if (!newDept.deptName) {
+    return res.status(400).json({ message: "Department Name is required" });
   }
 
   try {
     const raw = fs.readFileSync(DEPT_FILE_PATH);
     const data = JSON.parse(raw);
 
-    const exists = data.data.find((d) => d.deptId === newDept.deptId);
-    if (exists) {
-      return res.status(400).json({ message: "Department ID already exists" });
-    }
+    // const exists = data.data.find((d) => d.deptId === newDept.deptId);
+    // if (exists) {
+    //   return res.status(400).json({ message: "Department ID already exists" });
+    // }
+
+    const maxId = data.data.reduce((max, dept) => {
+      const numericId = parseInt(dept.deptId?.replace("d", "")) || 0;
+      return Math.max(max, numericId);
+    }, 0);
+    newDept.deptId = `d${maxId + 1}`;
 
     data.data.push(newDept);
 
