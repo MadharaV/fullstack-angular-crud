@@ -1,23 +1,24 @@
 {
   "data": [
     {
-      "firstName": "Mahendra Singh",
-      "lastName": "Dhoni",
-      "departmentId": "d1",
-      "gender": "Male",
-      "email": "msd@gmail.com",
-      "phoneNo": "01452397",
-      "empId": 1
+      "firstName": "Chainee",
+      "lastName": "Bhagya",
+      "departmentId": "d3",
+      "gender": "Fe-Male",
+      "email": "chai@gmail.com",
+      "phoneNo": "0715489625",
+      "empId": 4,
+      "departmentName": "Physical Chemistry"
     },
     {
-      "firstName": "Virat",
-      "lastName": "Kohli",
-      "departmentId": "",
-      "gender": "Male",
-      "email": "vkA@gmail.com",
-      "phoneNo": "015874566",
-      "empId": 2,
-      "departmentName": "Unknown"
+      "firstName": "Raya",
+      "lastName": "TheLastDragon",
+      "departmentId": "d2",
+      "gender": "Fe-Male",
+      "email": "ria@gmail.com",
+      "phoneNo": "0789456126",
+      "empId": 5,
+      "departmentName": "Mathematics and Statistics"
     }
   ]
 }

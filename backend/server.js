@@ -94,7 +94,7 @@ app.delete("/api/employees/:empId", (req, res) => {
   }
 
   fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2));
-  res.json({ message: "✅" });
+  res.json({ message: "Employee Deleted Successfully!" });
 });
 
 app.post("/api/departments", (req, res) => {

@@ -1,8 +1,20 @@
 {
   "data": [
     {
-      "deptName": "Computer Science",
-      "deptId": "d1"
+      "deptId": "d1",
+      "deptName": "Computer Science"
+    },
+    {
+      "deptId": "d2",
+      "deptName": "Mathematics and Statistics"
+    },
+    {
+      "deptId": "d3",
+      "deptName": "Physical Chemistry"
+    },
+    {
+      "deptName": "Organic Chemistry",
+      "deptId": "d5"
     }
   ]
 }
