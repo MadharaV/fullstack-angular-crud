@@ -8,8 +8,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DepartmentManagementComponent implements OnInit {
   departments: any[] = [];
-  departmentObject = {
-    deptId: '',
+  departmentObject: any = {
+    //deptId: '',
     deptName: '',
   };
 
@@ -17,25 +17,29 @@ export class DepartmentManagementComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   isEditMode(): boolean {
-    return this.departments.some(
-      (d) => d.deptId === this.departmentObject.deptId
-    );
+    return !!this.departmentObject.deptId;
+    //(d) => d.deptId === this.departmentObject.deptId
   }
 
   ngOnInit(): void {
     this.loadDepartments();
   }
 
-  loadDepartments() {
-    this.http
-      .get('http://localhost:3000/api/departments')
-      .subscribe((res: any) => {
+  loadDepartments(): void {
+    this.http.get('http://localhost:3000/api/departments').subscribe(
+      (res: any) => {
         this.departments = res.data;
-      });
+      },
+      (error) => {
+        alert('Failed to load departments');
+        console.error(error);
+      }
+    );
   }
 
-  onSaveDept() {
-    if (this.departmentObject.deptId && this.isEditMode()) {
+  onSaveDept(): void {
+    if (this.isEditMode()) {
+      // Update
       this.http
         .put(
           `http://localhost:3000/api/departments/${this.departmentObject.deptId}`,
@@ -44,27 +48,24 @@ export class DepartmentManagementComponent implements OnInit {
         .subscribe(
           (res: any) => {
             alert(res.message);
-            this.loadDepartments();
-            this.isListView = true;
-            this.departmentObject = { deptId: '', deptName: '' };
+            this.resetForm();
           },
           (error) => {
-            alert(error?.error?.message || 'Failed to upadate department.');
+            alert(error?.error?.message || 'Failed to update department.');
             console.error(error);
           }
         );
     } else {
+      // Remove deptId before sending
+      const { deptName } = this.departmentObject;
+      const newDept = { deptName };
+
       this.http
-        .post('http://localhost:3000/api/departments', this.departmentObject)
+        .post('http://localhost:3000/api/departments', newDept)
         .subscribe(
           (res: any) => {
             alert(res.message);
-            this.loadDepartments();
-            this.isListView = true;
-            this.departmentObject = {
-              deptId: '',
-              deptName: '',
-            };
+            this.resetForm();
           },
           (error) => {
             alert(error?.error?.message || 'Failed to create department.');
@@ -74,22 +75,39 @@ export class DepartmentManagementComponent implements OnInit {
     }
   }
 
-  onEditDept(dept: any) {
-    this.departmentObject = { ...dept };
+  onEditDept(dept: any): void {
+    this.departmentObject = {
+      deptId: dept.deptId,
+      deptName: dept.deptName,
+    };
     this.isListView = false;
   }
 
-  onDeleteDept(dept: any) {
+  onDeleteDept(dept: any): void {
     const confirmed = confirm(
       `Are you sure you want to delete ${dept.deptName}?`
     );
     if (confirmed) {
       this.http
         .delete(`http://localhost:3000/api/departments/${dept.deptId}`)
-        .subscribe((res: any) => {
-          alert(res.message);
-          this.loadDepartments();
-        });
+        .subscribe(
+          (res: any) => {
+            alert(res.message);
+            this.loadDepartments();
+          },
+          (error) => {
+            alert('Failed to delete department.');
+            console.error(error);
+          }
+        );
     }
+  }
+
+  resetForm(): void {
+    this.loadDepartments();
+    this.departmentObject = {
+      deptName: '',
+    };
+    this.isListView = true;
   }
 }

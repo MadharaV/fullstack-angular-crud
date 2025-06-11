@@ -41,8 +41,10 @@
   <div *ngIf="!isListView">
     <h3>{{ departmentObject.deptId ? "Edit" : "Add" }} Department</h3>
     <form (ngSubmit)="onSaveDept()" class="mt-3">
+      <!--
       <div class="mb-3">
         <label for="deptId" class="form-label">Department ID</label>
+        
         <input
           type="text"
           id="deptId"
@@ -51,7 +53,7 @@
           name="deptId"
           required
         />
-      </div>
+      </div>-->
       <div class="mb-3">
         <label for="deptName" class="form-label">Department Name</label>
         <input
