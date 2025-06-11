@@ -54,7 +54,7 @@
         >
           <div class="card-body p-4 p-md-5">
             <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
-            <form>
+            <form #empForm="ngForm" (ngSubmit)="onSubmit(empForm)">
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <div data-mdb-input-init class="form-outline">
@@ -62,10 +62,17 @@
                       type="text"
                       [(ngModel)]="employeeObject.firstName"
                       name="firstName"
+                      #firstName="ngModel"
+                      required
                       id="firstName"
                       class="form-control form-control-lg"
                     />
                     <label class="form-label" for="firstName">First Name</label>
+                    <small
+                      class="text-danger"
+                      *ngIf="firstName.invalid && empForm.submitted"
+                      >First Name is required.</small
+                    >
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
@@ -74,10 +81,17 @@
                       type="text"
                       [(ngModel)]="employeeObject.lastName"
                       name="lastName"
+                      #lastName="ngModel"
+                      required
                       id="lastName"
                       class="form-control form-control-lg"
                     />
                     <label class="form-label" for="lastName">Last Name</label>
+                    <small
+                      class="text-danger"
+                      *ngIf="lastName.invalid && empForm.submitted"
+                      >Last Name is required.</small
+                    >
                   </div>
                 </div>
               </div>
@@ -146,11 +160,26 @@
                     <input
                       [(ngModel)]="employeeObject.email"
                       name="email"
+                      #email="ngModel"
+                      required
+                      email
                       type="email"
                       id="emailAddress"
                       class="form-control form-control-lg"
                     />
                     <label class="form-label" for="emailAddress">Email</label>
+                    <small
+                      class="text-danger"
+                      *ngIf="hasError(email, 'required') && empForm.submitted"
+                    >
+                      Email is required.
+                    </small>
+                    <small
+                      class="text-danger"
+                      *ngIf="hasError(email, 'email') && empForm.submitted"
+                    >
+                      Enter a valid email address.
+                    </small>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4 pb-2">
@@ -158,6 +187,9 @@
                     <input
                       [(ngModel)]="employeeObject.phoneNo"
                       name="phoneNo"
+                      #phoneNo="ngModel"
+                      required
+                      pattern="^[0-9]{10}$"
                       type="tel"
                       id="phoneNumber"
                       class="form-control form-control-lg"
@@ -165,18 +197,33 @@
                     <label class="form-label" for="phoneNumber"
                       >Phone Number</label
                     >
+                    <small
+                      class="text-danger"
+                      *ngIf="hasError(phoneNo, 'required') && empForm.submitted"
+                    >
+                      Phone number is required.
+                    </small>
+                    <small
+                      class="text-danger"
+                      *ngIf="hasError(phoneNo, 'pattern') && empForm.submitted"
+                    >
+                      Phone number is invalid.
+                    </small>
                   </div>
                 </div>
               </div>
 
               <div class="mt-4 pt-2">
-                <input
+                <button class="btn btn-primary btn-lg" type="submit">
+                  {{ isEditing ? "Update" : "Submit" }}
+                </button>
+                <!-- <input
                   data-mdb-ripple-init
                   (click)="onCreateEmp()"
                   class="btn btn-primary btn-lg"
                   type="button"
                   [value]="isEditing ? 'Update' : 'Submit'"
-                />
+                /> -->
               </div>
             </form>
           </div>

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-department-management',
@@ -14,7 +16,7 @@ export class DepartmentManagementComponent implements OnInit {
   };
 
   isListView = true;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   isEditMode(): boolean {
     return !!this.departmentObject.deptId;
@@ -38,6 +40,15 @@ export class DepartmentManagementComponent implements OnInit {
   }
 
   onSaveDept(): void {
+    if (!this.departmentObject.deptName?.match(/^[A-Za-z ]+$/)) {
+      this.toastr.error('Department name must contain only letters.');
+      return;
+    }
+
+    if (!this.departmentObject.deptName?.trim()) {
+      this.toastr.error('Department name is required.');
+      return;
+    }
     if (this.isEditMode()) {
       // Update
       this.http
@@ -47,11 +58,13 @@ export class DepartmentManagementComponent implements OnInit {
         )
         .subscribe(
           (res: any) => {
-            alert(res.message);
+            this.toastr.success(res.message);
             this.resetForm();
           },
           (error) => {
-            alert(error?.error?.message || 'Failed to update department.');
+            this.toastr.error(
+              error?.error?.message || 'Failed to update department.'
+            );
             console.error(error);
           }
         );
@@ -64,15 +77,26 @@ export class DepartmentManagementComponent implements OnInit {
         .post('http://localhost:3000/api/departments', newDept)
         .subscribe(
           (res: any) => {
-            alert(res.message);
+            this.toastr.success(res.message);
             this.resetForm();
           },
           (error) => {
-            alert(error?.error?.message || 'Failed to create department.');
+            this.toastr.error(
+              error?.error?.message || 'Failed to create department.'
+            );
             console.error(error);
           }
         );
     }
+    //this.toastr.success('Department saved successfully!');
+    this.isListView = true;
+  }
+
+  onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+    this.onSaveDept();
   }
 
   onEditDept(dept: any): void {
@@ -92,11 +116,11 @@ export class DepartmentManagementComponent implements OnInit {
         .delete(`http://localhost:3000/api/departments/${dept.deptId}`)
         .subscribe(
           (res: any) => {
-            alert(res.message);
+            this.toastr.success(res.message);
             this.loadDepartments();
           },
           (error) => {
-            alert('Failed to delete department.');
+            this.toastr.error('Failed to delete department.');
             console.error(error);
           }
         );

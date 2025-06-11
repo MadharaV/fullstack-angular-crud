@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgForm, NgModel } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employee-registration',
@@ -19,7 +21,7 @@ export class EmployeeRegistrationComponent implements OnInit {
     email: '',
     phoneNo: '',
   };
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.loadDepartments();
@@ -64,7 +66,7 @@ export class EmployeeRegistrationComponent implements OnInit {
     this.http
       .post('http://localhost:3000/api/employees', this.employeeObject)
       .subscribe((res: any) => {
-        alert(res.message);
+        this.toastr.success(res.message);
 
         this.loadEmployees();
 
@@ -89,6 +91,17 @@ export class EmployeeRegistrationComponent implements OnInit {
     this.isEditing = true;
   }
 
+  onSubmit(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+    this.onCreateEmp();
+  }
+
+  hasError(control: NgModel, errorName: string): boolean {
+    return control.invalid && control.errors?.[errorName];
+  }
+
   onDelete(item: any) {
     const confirmed = confirm(
       `Are you sure you want to delete ${item.firstName} ${item.lastName}?`
@@ -98,7 +111,7 @@ export class EmployeeRegistrationComponent implements OnInit {
         .delete(`http://localhost:3000/api/employees/${item.empId}`)
         .subscribe({
           next: (res: any) => {
-            alert(res.message);
+            this.toastr.success(res.message);
             this.loadEmployees(); // Refresh list after deletion
           },
           error: (err) => {
