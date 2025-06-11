@@ -27,12 +27,15 @@ export class EmployeeRegistrationComponent implements OnInit {
   }
 
   loadDepartments() {
-    this.http
-      .get('http://localhost:3000/api/departments')
-      .subscribe((res: any) => {
-        console.log('Departments:', res);
+    this.http.get('http://localhost:3000/api/departments').subscribe(
+      (res: any) => {
+        //console.log('Departments:', res);
         this.departments = res.data;
-      });
+      },
+      (error) => {
+        console.error('Failed to load departments:', error);
+      }
+    );
   }
 
   loadEmployees() {
@@ -92,7 +95,7 @@ export class EmployeeRegistrationComponent implements OnInit {
     );
     if (confirmed) {
       this.http
-        .delete(`http://localhost:3000/api/employees/${item.email}`)
+        .delete(`http://localhost:3000/api/employees/${item.empId}`)
         .subscribe({
           next: (res: any) => {
             alert(res.message);
